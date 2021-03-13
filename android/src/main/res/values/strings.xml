@@ -4,7 +4,7 @@
     <!-- we use different callback schemes here to avoid 'Open with' dialog,
          the intent-filter for callback must be defined in the same activity which initiates the checkout
          to properly handle onActivityResult -->
-    <string name="checkout_ui_callback_scheme">checkoutui</string>
+    <string name="checkout_ui_callback_scheme">alamercheckout</string>
     <string name="payment_button_callback_scheme">paymentbutton</string>
     <string name="custom_ui_callback_scheme">customui</string>
 

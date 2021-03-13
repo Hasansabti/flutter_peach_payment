@@ -64,7 +64,8 @@ public class PaymentStatusRequestAsyncTask extends AsyncTask<String, Void, Strin
 
         try {
             urlString = Constants.BASE_URL + "/status?resourcePath=" +
-                    URLEncoder.encode(resourcePath, "UTF-8");
+                    URLEncoder.encode(resourcePath, "UTF-8")+
+            "&method="+Constants.Config.METHOD;
 
             Log.d(Constants.LOG_TAG, "Status request url: " + urlString);
 

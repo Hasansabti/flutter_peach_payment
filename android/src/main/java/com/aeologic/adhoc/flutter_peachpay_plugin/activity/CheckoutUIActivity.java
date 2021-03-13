@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.aeologic.adhoc.flutter_peachpay_plugin.R;
 import com.aeologic.adhoc.flutter_peachpay_plugin.common.Constants;

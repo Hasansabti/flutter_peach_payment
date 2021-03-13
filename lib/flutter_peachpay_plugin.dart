@@ -6,8 +6,8 @@ class PaymentGatewayPlugin {
   static const MethodChannel _channel =
   const MethodChannel('flutter_peachpay_plugin');
 
-  static Future<String>  checkoutActitvity(String amt) async {
-    final String version = await _channel.invokeMethod('checkoutActivity',{"amt":amt});
+  static Future<String>  checkoutActitvity(String checkoutid, String method) async {
+    final String version = await _channel.invokeMethod('checkoutActivity',{"checkoutid":checkoutid, "method":method});
     return version;
   }
 }

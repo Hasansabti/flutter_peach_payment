@@ -3,7 +3,8 @@ package com.aeologic.adhoc.flutter_peachpay_plugin.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import com.aeologic.adhoc.flutter_peachpay_plugin.R;
 import com.aeologic.adhoc.flutter_peachpay_plugin.common.Constants;
@@ -82,6 +83,7 @@ public class BasePaymentActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         /* Override onActivityResult to get notified when the checkout process is done. */
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CheckoutActivity.REQUEST_CODE_CHECKOUT) {
             switch (resultCode) {
                 case CheckoutActivity.RESULT_OK:
@@ -104,7 +106,7 @@ public class BasePaymentActivity extends BaseActivity
                     break;
                 case CheckoutActivity.RESULT_CANCELED:
                     hideProgressDialog();
-                    
+
                     break;
                 case CheckoutActivity.RESULT_ERROR:
                     hideProgressDialog();

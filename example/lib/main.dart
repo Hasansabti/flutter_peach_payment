@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future openPaymentGateway() async {
-    String tempResult=await PaymentGatewayPlugin.checkoutActitvity("49.99");
+    String tempResult=await PaymentGatewayPlugin.checkoutActitvity("49.99","");
     setState(()
     {
       result=tempResult;

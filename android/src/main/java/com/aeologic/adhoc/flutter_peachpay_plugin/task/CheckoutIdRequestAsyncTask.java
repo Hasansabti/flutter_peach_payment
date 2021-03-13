@@ -37,6 +37,8 @@ public class CheckoutIdRequestAsyncTask extends AsyncTask<String, Void, String> 
 
     @Override
     protected void onPostExecute(String checkoutId) {
+
+      //  Log.d(Constants.LOG_TAG,"CheckoutID: "+checkoutId);
         if (listener != null) {
             listener.onCheckoutIdReceived(checkoutId);
         }
@@ -48,16 +50,30 @@ public class CheckoutIdRequestAsyncTask extends AsyncTask<String, Void, String> 
                 "amount=" + amount +
                 "&currency=" + currency +
                 "&paymentType=PA" +
+                "&cartId=" +Constants.Config.CARTID+
+                "&method="+Constants.Config.METHOD+
                 /* store notificationUrl on your server to change it any time without updating the app */
-                "&notificationUrl=http://52.59.56.185:80/notification";
+                "&notificationUrl=https://shop.alamer-market.com/api/checkout/notification";
+
+                Log.d(Constants.LOG_TAG,"Requesting" + urlString);
         URL url;
         HttpURLConnection connection = null;
         String checkoutId = null;
 
         try {
             url = new URL(urlString);
+        Log.d(Constants.LOG_TAG,"Grtting Token " + Constants.Config.TOKEN);
             connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization","Bearer " + Constants.Config.TOKEN);
+            connection.setRequestProperty("Accept","application/json");
+           // connection.setRequestProperty( "Content-type", "application/x-www-form-urlencoded");
+           // connection.setRequestProperty( "Accept", "*/*" );
+
             connection.setConnectTimeout(Constants.CONNECTION_TIMEOUT);
+
+            InputStreamReader sr = new InputStreamReader(connection.getInputStream());
+
+
 
             JsonReader reader = new JsonReader(
                     new InputStreamReader(connection.getInputStream(), "UTF-8"));

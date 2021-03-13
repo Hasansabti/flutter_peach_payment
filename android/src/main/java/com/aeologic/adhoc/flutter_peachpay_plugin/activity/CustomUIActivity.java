@@ -8,10 +8,12 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
+
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import com.aeologic.adhoc.flutter_peachpay_plugin.R;
 import com.aeologic.adhoc.flutter_peachpay_plugin.common.Constants;
@@ -111,7 +113,7 @@ public class CustomUIActivity extends BasePaymentActivity implements ITransactio
             @Override
             public void onClick(View v) {
                 if (providerBinder != null && checkFields()) {
-                    requestCheckoutId(getString(R.string.custom_ui_callback_scheme));
+                  //  requestCheckoutId(getString(R.string.custom_ui_callback_scheme));
                 }
             }
         });
@@ -138,7 +140,7 @@ public class CustomUIActivity extends BasePaymentActivity implements ITransactio
         if (checkoutId != null) {
             this.checkoutId = checkoutId;
 
-            requestCheckoutInfo(checkoutId);
+         //   requestCheckoutInfo(checkoutId);
         }
     }
 
@@ -278,7 +280,7 @@ public class CustomUIActivity extends BasePaymentActivity implements ITransactio
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showAlertDialog(message);
+            //    showAlertDialog(message);
             }
         });
     }
