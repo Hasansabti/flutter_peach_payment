@@ -34,12 +34,19 @@ android {
 }
 
 dependencies {
+
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:customtabs:28.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'io.card:android-sdk:5.5.1'
     implementation project(':alipay')
     implementation project(':oppwa.mobile')
