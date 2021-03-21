@@ -8,28 +8,13 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.aeologic.adhoc.flutter_peachpay_plugin.activity.BasePaymentActivity;
-import com.aeologic.adhoc.flutter_peachpay_plugin.activity.CheckoutUIActivity;
-import com.aeologic.adhoc.flutter_peachpay_plugin.activity.CustomUIActivity;
 import com.aeologic.adhoc.flutter_peachpay_plugin.common.Constants;
-import com.aeologic.adhoc.flutter_peachpay_plugin.common.Utils;
-import com.aeologic.adhoc.flutter_peachpay_plugin.net.ApiError;
-import com.aeologic.adhoc.flutter_peachpay_plugin.net.ApiService;
-import com.aeologic.adhoc.flutter_peachpay_plugin.net.RetrofitBuilder;
-import com.aeologic.adhoc.flutter_peachpay_plugin.net.auth.TokenManager;
 import com.aeologic.adhoc.flutter_peachpay_plugin.receiver.CheckoutBroadcastReceiver;
-import com.aeologic.adhoc.flutter_peachpay_plugin.task.CheckoutIdRequestAsyncTask;
 import com.aeologic.adhoc.flutter_peachpay_plugin.task.CheckoutIdRequestListener;
-import com.aeologic.adhoc.flutter_peachpay_plugin.task.PaymentStatusRequestAsyncTask;
 import com.aeologic.adhoc.flutter_peachpay_plugin.task.PaymentStatusRequestListener;
 import com.google.android.gms.wallet.PaymentDataRequest;
 import com.google.android.gms.wallet.WalletConstants;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.oppwa.mobile.connect.checkout.dialog.CheckoutActivity;
 import com.oppwa.mobile.connect.checkout.dialog.GooglePayHelper;
 import com.oppwa.mobile.connect.checkout.meta.CheckoutSettings;
@@ -39,26 +24,12 @@ import com.oppwa.mobile.connect.provider.Connect;
 import com.oppwa.mobile.connect.provider.Transaction;
 import com.oppwa.mobile.connect.provider.TransactionType;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 
 /** FlutterPeachpayPlugin */
 public class FlutterPeachpayPlugin implements MethodCallHandler ,PluginRegistry.ActivityResultListener,
@@ -194,69 +165,6 @@ public class FlutterPeachpayPlugin implements MethodCallHandler ,PluginRegistry.
   }
 
 
-  protected void requestCheckoutId(String callbackScheme) {
-    showProgressDialog(R.string.progress_message_checkout_id);
-    TokenManager tokenManager = TokenManager.getInstance(null);
-Constants.Config.setBrands();
-    Call<JsonElement> cocall;
-    ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, tokenManager);
-    cocall = authservice.getCheckoutId(Constants.Config.AMOUNT, Constants.Config.CARTID, Constants.Config.METHOD, Constants.NOTIFICATION_URL+Constants.Config.METHOD, Constants.Config.DELIVERTYPE,Constants.Config.COMPANY, Constants.Config.LOCATION, Constants.Config.ORDERTOKEN, Constants.Config.USERTIME, Constants.Config.USERCOMMENTS);
-    cocall.enqueue(new Callback<JsonElement>() {
-      private String TAG = "Login";
-
-      @Override
-      public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-
-        Log.w(TAG, "onResponse: " + response);
-        Log.w(TAG, "onResponse: " + response.body());
-        if (response.isSuccessful()) {
-
-          try {
-            JsonParser parser = new JsonParser();
-
-
-            JsonObject jsonCheckoutid = response.body().getAsJsonObject();
-            if (jsonCheckoutid.has("checkoutId")) {
-              String checkoutid = jsonCheckoutid.get("checkoutId").getAsString();
-              onCheckoutIdReceived(checkoutid);
-
-
-            } else {
-              onCheckoutIdReceived(null);
-            }
-          }catch (Exception ex){
-            onCheckoutIdReceived(null);
-          }
-        } else {
-          onCheckoutIdReceived(null);
-          if (response.code() == 422) {
-          //  handleErrors(response.errorBody());
-          }
-          if (response.code() == 401) {
-            ApiError apiError = Utils.converErrors(response.errorBody());
-            Toast.makeText(registrar.activity(), apiError.getMessage(), Toast.LENGTH_LONG).show();
-          }
-          // showForm();
-         // Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-        }
-
-      }
-
-      @Override
-      public void onFailure(Call<JsonElement> call, Throwable t) {
-        onCheckoutIdReceived(null);
-        Log.w(TAG, "onFailure: " + t.getLocalizedMessage());
-        t.printStackTrace();
-        //  showForm();
-     //   Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-      }
-    });
-
-
-  //  new CheckoutIdRequestAsyncTask(this)
-    //        .execute(Constants.Config.AMOUNT, Constants.Config.CURRENCY);
-  }
-
   @Override
   public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -366,68 +274,6 @@ Constants.Config.setBrands();
     }
 
     showAlertDialog(R.string.message_unsuccessful_payment);
-  }
-
-  protected void requestPaymentStatus(String resourcePath) {
-    showProgressDialog(R.string.progress_message_payment_status);
-
-    TokenManager tokenManager = TokenManager.getInstance(null);
-    Call<JsonElement> cocall;
-    ApiService authservice = RetrofitBuilder.createServiceWithAuth(ApiService.class, tokenManager);
-
-    cocall = authservice.getPaymentStatus(resourcePath, Constants.Config.METHOD);
-
-    cocall.enqueue(new Callback<JsonElement>() {
-      private String TAG = "Login";
-
-      @Override
-      public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-
-        Log.w(TAG, "onResponse: " + response);
-        Log.w(TAG, "onResponse: " + response.body());
-        if (response.isSuccessful()) {
-
-          try {
-            JsonParser parser = new JsonParser();
-
-
-            JsonObject jsonCheckoutid = response.body().getAsJsonObject();
-            if (jsonCheckoutid.has("paymentResult")) {
-              String result = jsonCheckoutid.get("paymentResult").getAsString();
-              onPaymentStatusReceived(result);
-            } else {
-              onPaymentStatusReceived(null);
-            }
-          }catch (Exception ex){
-            onPaymentStatusReceived(null);
-          }
-        } else {
-          onPaymentStatusReceived(null);
-          if (response.code() == 422) {
-            //  handleErrors(response.errorBody());
-          }
-          if (response.code() == 401) {
-            ApiError apiError = Utils.converErrors(response.errorBody());
-            Toast.makeText(registrar.activity(), apiError.getMessage(), Toast.LENGTH_LONG).show();
-          }
-          // showForm();
-          // Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-        }
-
-      }
-
-      @Override
-      public void onFailure(Call<JsonElement> call, Throwable t) {
-        onPaymentStatusReceived(null);
-        Log.w(TAG, "onFailure: " + t.getLocalizedMessage());
-        t.printStackTrace();
-        //  showForm();
-        //   Toast.makeText(getApplicationContext(), getString(R.string.error), Toast.LENGTH_SHORT).show();
-      }
-    });
-
-
-    //  new PaymentStatusRequestAsyncTask(this).execute(resourcePath);
   }
 
 
